@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="titulo-pagina">Rifa Nacional</title>
+    <style id="estilos-personalizacion">
+        :root {
+            --color-primario: #007bff;
+            --color-secundario: #6c757d;
+            --color-fondo: #f4f4f4;
+            --color-texto: #333;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+        .contenedor-principal {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+        }
+        .panel-configuracion {
+            width: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-right: 20px;
+        }
+        .seccion-configuracion {
+            margin-bottom: 20px;
+        }
+        .seccion-configuracion input,
+        .seccion-configuracion select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .rifa-container {
+            flex-grow: 1;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        #area-premios {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .premio {
+            text-align: center;
+            max-width: 200px;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .premio img {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .formulario-registro {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .botones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .botones button {
+            background-color: var(--color-primario);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .botones button:hover {
+            background-color: #0056b3;
+        }
+        .pestanas {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .pestana {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+        }
+        .pestana.activa {
+            background-color: var(--color-primario);
+            color: white;
+        }
+        .contenido-pestana {
+            display: none;
+        }
+        .contenido-pestana.activo {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-principal">
+        <!-- Panel de Configuración -->
+        <div class="panel-configuracion">
+            <div class="pestanas">
+                <div class="pestana activa" data-tab="general">General</div>
+                <div class="pestana" data-tab="diseno">Diseño</div>
+                <div class="pestana" data-tab="rifas">Rifas</div>
+                <div class="pestana" data-tab="publicacion">Publicación</div>
+            </div>
+
+            <!-- Contenido de Pestañas -->
+            <div id="tab-general" class="contenido-pestana activo">
+                <div class="seccion-configuracion">
+                    <h3>Información de la Rifa</h3>
+                    <input type="text" id="input-nombre-rifa" placeholder="Nombre de la Rifa">
+                    <input type="text" id="input-descripcion-rifa" placeholder="Descripción">
+                    <select id="tipo-rifa">
+                        <option value="">Seleccionar Tipo de Rifa</option>
+                        <option value="auto">Automóvil</option>
+                        <option value="viaje">Viaje</option>
+                        <option value="electronica">Electrónica</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="tab-diseno" class="contenido-pestana">
+                <div class="seccion-configuracion">
+                    <h3>Personalización Visual</h3>
+                    <label>Color Primario: <input type="color" id="input-color-primario" value="#007bff"></label>
+                    <label>Color Secundario: <input type="color" id="input-color-secundario" value="#6c757d"></label>
+                    <label>Color de Fondo: <input type="color" id="input-color-fondo" value="#f4f4f4"></label>
+                    <select id="seleccion-fuente">
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="Helvetica, sans-serif">Helvetica</option>
+                        <option value="Times New Roman, serif">Times New Roman</option>
+                        <option value="Courier New, monospace">Courier New</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="tab-rifas" class="contenido-pestana">
+                <div class="seccion-configuracion">
+                    <h3>Configuración de Rifas</h3>
+                    <input type="number" id="cantidad-boletas" placeholder="Cantidad de Boletas" min="100" max="10000">
+                    <input type="number" id="precio-boleta" placeholder="Precio por Boleta" min="1000" max="100000">
+                    <div id="configuracion-premios">
+                        <div class="premio-config">
+                            <input type="text" placeholder="Nombre del Premio">
+                            <input type="file" accept="image/*" class="input-imagen-premio">
+                            <button onclick="agregarPremio()">Agregar Premio</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-publicacion" class="contenido-pestana">
+                <div class="seccion-configuracion">
+                    <h3>Configuración de Publicación</h3>
+                    <input type="date" id="fecha-inicio-rifa">
+                    <input type="date" id="fecha-fin-rifa">
+                    <select id="metodos-pago">
+                        <option value="">Seleccionar Métodos de Pago</option>
+                        <option value="tarjeta">Tarjeta de Crédito</option>
+                        <option value="pse">PSE</option>
+                        <option value="transferencia">Transferencia Bancaria</option>
+                    </select>
+                    <input type="email" id="correo-contacto" placeholder="Correo de Contacto">
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Visualización de la Rifa -->
+        <div class="rifa-container">
+            <h1 id="titulo-rifa">Rifa Nacional</h1>
+            
+            <div id="area-premios">
+                <!-- Premios se agregarán dinámicamente -->
+            </div>
+
+            <div id="contenido-rifa">
+                <p id="descripcion-rifa">Participa y gana increíbles premios</p>
+            </div>
+
+            <div class="formulario-registro">
+                <input type="text" id="nombre" placeholder="Nombre Completo" required>
+                <input type="email" id="correo" placeholder="Correo Electrónico" required>
+            </div>
+
+            <div class="botones">
+                <button onclick="generarNumeros()">Generar Números</button>
+                <button onclick="iniciarPago()" id="boton-pagar" disabled>Procesar Compra</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Manejo de Pestañas
+        document.querySelectorAll('.pestana').forEach(pestana => {
+            pestana.addEventListener('click', () => {
+                const tabId = pestana.getAttribute('data-tab');
+                
+                // Desactivar todas las pestañas y contenidos
+                document.querySelectorAll('.pestana').forEach(p => p.classList.remove('activa'));
+                document.querySelectorAll('.contenido-pestana').forEach(c => c.classList.remove('activo'));
+                
+                // Activar la pestana y contenido seleccionados
+                pestana.classList.add('activa');
+                document.getElementById(`tab-${tabId}`).classList.add('activo');
+            });
+        });
+
+        // Funciones de anteriores implementaciones (generarNumeros, iniciarPago, etc.) se mantendrán igual
+        const TOTAL_NUMEROS = 1000; // 000 a 999
+        const BOLETAS_MINIMAS = 4;
+        let numerosGenerados = [];
+        let numerosSorteados = new Set();
+
+        function generarNumeros() {
+            // Limpiar números previos
+            numerosGenerados = [];
+            
+            // Generar 4 números únicos de 3 dígitos
+            while (numerosGenerados.length < BOLETAS_MINIMAS) {
+                const numero = String(Math.floor(Math.random() * TOTAL_NUMEROS)).padStart(3, '0');
+                
+                if (!numerosGenerados.includes(numero)) {
+                    numerosGenerados.push(numero);
+                }
+            }
+
+            // Aquí podrías mostrar los números generados en la interfaz
+            alert(`Números generados: ${numerosGenerados.join(', ')}`);
+
+            // Habilitar botón de pago
+            document.getElementById('boton-pagar').disabled = false;
+        }
+
+        function iniciarPago() {
+            const nombre = document.getElementById('nombre').value;
+            const correo = document.getElementById('correo').value;
+            const precioBoleta = document.getElementById('precio-boleta').value || 3000;
+
+            if (!nombre || !correo) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
+
+            const totalPagar = numerosGenerados.length * precioBoleta;
+            
+            // Simulación de proceso de pago y envío de correo
+            alert(`
+Compra procesada:
+Nombre: ${nombre}
+Correo: ${correo}
+Números: ${numerosGenerados.join(', ')}
+Total: $${totalPagar} COP
+            `);
+
+            // Simular envío de correo
+            enviarCorreoNumeros(nombre, correo, numerosGenerados, totalPagar);
+        }
+
+        function enviarCorreoNumeros(nombre, correo, numeros, total) {
+            console.log('Correo simulado enviado a:', correo);
+            console.log(`
+Estimado/a ${nombre},
+
+Gracias por participar en nuestra rifa. 
+Tus números de boleta son: ${numeros.join(', ')}
+
+Detalles de la compra:
+- Total pagado: $${total} COP
+
+¡Mucha suerte!
+
+Equipo de la Rifa Nacional
+            `);
+        }
+
+        function agregarPremio() {
+            const inputNombre = document.querySelector('#configuracion-premios input[type="text"]');
+            const inputImagen = document.querySelector('#configuracion-premios input[type="file"]');
+            const areaPremios = document.getElementById('area-premios');
+
+            if (inputNombre.value && inputImagen.files.length > 0) {
+                const archivo = inputImagen.files[0];
+                const lector = new FileReader();
+
+                lector.onload = function(e) {
+                    const divPremio = document.createElement('div');
+                    divPremio.className = 'premio';
+                    
+                    const imagen = document.createElement('img');
+                    imagen.src = e.target.result;
+                    
+                    const nombrePremio = document.createElement('h3');
+                    nombrePremio.textContent = inputNombre.value;
+
+                    const botonEliminar = document.createElement('button');
+                    botonEliminar.textContent = 'Eliminar';
+                    botonEliminar.onclick = function() {
+                        areaPremios.removeChild(divPremio);
+                    };
+
+                    divPremio.appendChild(imagen);
+                    divPremio.appendChild(nombrePremio);
+                    divPremio.appendChild(botonEliminar);
+
+                    areaPremios.appendChild(divPremio);
+
+                    // Limpiar inputs
+                    inputNombre.value = '';
+                    inputImagen.value = '';
+                };
+
+                lector.readAsDataURL(archivo);
+            } else {
+                alert('Por favor ingresa un nombre y selecciona una imagen');
+            }
+        }
+
+        // Eventos de personalización
+        document.getElementById('input-nombre-rifa').addEventListener('input', (e) => {
+            document.getElementById('titulo-rifa').textContent = e.target.value;
+        });
+
+        document.getElementById('input-descripcion-rifa').addEventListener('input', (e) => {
+            document.getElementById('descripcion-rifa').textContent = e.target.value;
+        });
+
+        // Actualización de colores
+        ['input-color-primario', 'input-color-secundario', 'input-color-fondo'].forEach(id => {
+            document.getElementById(id).addEventListener('input', actualizarColores);
+        });
+
+        function actualizarColores() {
+            const estilos = document.getElementById('estilos-personalizacion');
+            const colorPrimario = document.getElementById('input-color-primario').value;
+            const colorSecundario = document.getElementById('input-color-secundario').value;
+            const colorFondo = document.getElementById('input-color-fondo').value;
+
+            estilos.innerHTML = estilos.innerHTML.replace(
+                /--color-primario: #[0-9a-fA-F]+;/,
+                `--color-primario: ${colorPrimario};`
+            ).replace(
+                /--color-secundario: #[0-9a-fA-F]+;/,
+                `--color-secundario: ${colorSecundario};`
+            ).replace(
+                /--color-fondo: #[0-9a-fA-F]+;/,
+                `--color-fondo: ${colorFondo};`
+            );
+        }
+    </script>
